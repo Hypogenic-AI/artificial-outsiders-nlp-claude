@@ -1,0 +1,23 @@
+idea:
+  title: Artificial Outsiders
+  domain: nlp
+  hypothesis: 'LLM-written documents that other LLMs do not find as interesting are
+    more likely to be interesting to humans than LLM-written documents that all LLMs
+    like.
+
+    '
+  background:
+    description: 'Hypothesis: the LLM-written documents that other LLMs don''t think
+      are as interesting are more likely to be interesting to humans than LLM-written
+      documents all LLMs like.
+
+      '
+  metadata:
+    author: Ari Holtzman
+    source: IdeaHub
+    source_url: https://hypogenic.ai/ideahub/idea/R7zjLRzbbRZzxjzKEQJS
+    idea_id: artificial_outsiders_20260407_120013_dd16bc07
+    created_at: '2026-04-07T12:00:13.939001'
+    status: submitted
+    github_repo_name: artificial-outsiders-nlp-claude
+    github_repo_url: https://github.com/Hypogenic-AI/artificial-outsiders-nlp-claude
