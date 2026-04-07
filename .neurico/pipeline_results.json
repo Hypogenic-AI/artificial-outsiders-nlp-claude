@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "stages": {
+    "resource_finder": {
+      "success": true,
+      "completion_marker": "/workspaces/artificial-outsiders-nlp-claude/.resource_finder_complete",
+      "outputs": {
+        "literature_review": "/workspaces/artificial-outsiders-nlp-claude/literature_review.md",
+        "resources_catalog": "/workspaces/artificial-outsiders-nlp-claude/resources.md",
+        "papers_dir": "/workspaces/artificial-outsiders-nlp-claude/papers",
+        "datasets_dir": "/workspaces/artificial-outsiders-nlp-claude/datasets",
+        "code_dir": "/workspaces/artificial-outsiders-nlp-claude/code"
+      },
+      "log_file": "/workspaces/artificial-outsiders-nlp-claude/logs/resource_finder_claude.log",
+      "transcript_file": "/workspaces/artificial-outsiders-nlp-claude/logs/resource_finder_claude_transcript.jsonl",
+      "elapsed_time": 2088.2333846092224
+    },
+    "experiment_runner": {
+      "success": true,
+      "return_code": 0,
+      "elapsed_time": 1052.0247614383698,
+      "log_file": "/workspaces/artificial-outsiders-nlp-claude/logs/execution_claude.log",
+      "transcript_file": "/workspaces/artificial-outsiders-nlp-claude/logs/execution_claude_transcript.jsonl"
+    }
+  },
+  "work_dir": "/workspaces/artificial-outsiders-nlp-claude"
+}

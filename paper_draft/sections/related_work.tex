@@ -1,0 +1,31 @@
+\section{Related Work}
+\label{sec:related}
+
+\para{LLM-as-a-Judge.}
+\citet{zheng2023judging} introduced MT-Bench and Chatbot Arena, establishing that strong LLM judges achieve approximately 80\% agreement with human preferences---comparable to human-human agreement.
+However, they also documented systematic biases including position preference, verbosity preference, and self-enhancement.
+\citet{wang2023large} showed that LLM evaluation rankings can be manipulated by altering response order and proposed calibration strategies.
+\citet{stureborg2024large} identified familiarity bias (preference for lower-perplexity text), skewed rating distributions, and anchoring effects, with low inter-sample agreement indicating inconsistency.
+Our work extends this line by testing whether LLM judge consensus specifically misaligns with human interestingness judgments.
+
+\para{Self-Preference and Perplexity Bias.}
+\citet{panickssery2024llm} demonstrated that LLMs recognize and favor their own generations, with GPT-4 identifying its outputs at 73.5\% accuracy.
+Fine-tuning experiments revealed a linear correlation between self-recognition capability and self-preference strength.
+\citet{wataoka2024self} deepened this finding by showing that self-preference is driven by \emph{perplexity preference}: LLMs assign higher scores to lower-perplexity text regardless of authorship.
+\citet{koo2023cobbler} benchmarked six cognitive biases across 16 LLMs and found an average rank-biased overlap of only 0.44 between human and machine preferences.
+These biases motivate our hypothesis---if LLMs prefer familiar text, they may systematically undervalue novel, surprising content.
+Unlike prior work that documents these biases in isolation, we directly test whether they aggregate into an inverse relationship between LLM consensus and human interestingness.
+
+\para{LLM Output Diversity and Creativity.}
+A growing body of work documents the homogeneity of LLM outputs.
+\citet{echoes2024} introduced the Sui Generis score to quantify plot-level uniqueness and found that LLM stories are dramatically less diverse than human writing, with cross-model echo rates showing that different LLMs converge on similar narrative solutions.
+\citet{doshi2024generative} found that while generative AI enhances individual creativity, it reduces collective diversity---AI-assisted stories are better but more similar to each other.
+\citet{chakrabarty2023art} showed that LLM-generated text scores well on automated creativity metrics but lacks genuine novelty when analyzed by experts.
+\citet{gomez2023confederacy} found through blind evaluation of 65 stories from 13 LLMs that human-written stories are often preferred for originality and humor.
+Our work builds on these diversity findings: we test whether the rare ``outliers'' that break LLM homogeneity are disproportionately interesting to humans.
+
+\para{Human vs.\ AI Preferences.}
+\citet{wu2023style} showed that both human and LLM evaluators prefer longer, grammatically polished text---even when it contains factual errors---suggesting shared ``style over substance'' biases.
+\citet{porter2024ai} found that humans rated AI-generated poems higher than human-written poems, possibly because AI poems are more accessible.
+\citet{si2024can} reported that LLM-generated research ideas were rated as more novel but less feasible than expert-written ones.
+These mixed results motivate our focus on \emph{interestingness} specifically, a dimension where human-LLM alignment has not been directly studied.

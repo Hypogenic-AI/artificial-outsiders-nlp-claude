@@ -1,0 +1,7 @@
+Large language models are increasingly used as automated text evaluators, yet they share systematic biases---self-preference, perplexity preference, and output convergence---that could cause them to undervalue genuinely interesting content.
+We test the ``artificial outsider'' hypothesis: that LLM-generated texts rated as uninteresting by LLM judges are paradoxically \emph{more} interesting to humans.
+Using the \hanna dataset (1,056 stories from 11 generators with ground-truth human ratings) and 3,168 LLM judge evaluations across three OpenAI models, we find the hypothesis is \textbf{definitively refuted}.
+LLM consensus positively correlates with human interestingness (Spearman $\rho = 0.48$, $p < 10^{-62}$), and stories unanimously rated low by all LLM judges receive significantly lower human interest ratings.
+A complementary analysis of 200 Chatbot Arena battles confirms this: humans chose the LLM-preferred response 77\% of the time.
+However, after controlling for overall text quality, the LLM-interestingness correlation drops to near zero ($\rho \approx 0.00$), revealing that LLMs primarily detect quality rather than possessing a unique bias for or against interesting content.
+Our results validate LLM-as-a-judge for interestingness screening while identifying the quality confound as a critical consideration for future evaluation research.

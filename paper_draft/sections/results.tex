@@ -1,0 +1,125 @@
+\section{Results}
+\label{sec:results}
+
+\subsection{Primary Hypothesis Tests}
+\label{sec:primary}
+
+\Tabref{tab:hypotheses} presents results for all four hypothesis tests.
+Three of four tests strongly refute the artificial outsider hypothesis, while the fourth provides only weak support with a small effect size.
+
+\begin{table}[t]
+    \centering
+    \caption{Primary hypothesis test results. All tests use Bonferroni-corrected $\alpha = 0.0125$. Three of four tests refute the artificial outsider hypothesis---LLM consensus positively predicts human interestingness. H2 provides weak support (LLM disagreement correlates with Engagement), but the effect size is small.}
+    \begin{tabular}{@{}llccl@{}}
+        \toprule
+        \textbf{Hypothesis} & \textbf{Statistic} & \textbf{Value} & \textbf{$p$-value} & \textbf{Verdict} \\
+        \midrule
+        H1: Consensus vs.\ Surprise & Spearman $\rho$ & $+0.402$ & $3.1 \times 10^{-42}$ & \textbf{Refuted} \\
+        H2: Disagreement vs.\ Engagement & Spearman $\rho$ & $+0.143$ & $3.2 \times 10^{-6}$ & Weak support \\
+        H3: Bottom vs.\ Top quartile & Mann-Whitney $U$ & --- & $1.00$ & \textbf{Refuted} \\
+        H4: LLM-only consensus vs.\ interest & Spearman $\rho$ & $+0.358$ & $1.8 \times 10^{-30}$ & \textbf{Refuted} \\
+        \bottomrule
+    \end{tabular}
+    \label{tab:hypotheses}
+\end{table}
+
+\para{H1: LLM consensus positively predicts human surprise.}
+LLM consensus correlates positively with human Surprise ratings ($\rho = +0.402$, $p = 3.1 \times 10^{-42}$), the opposite direction predicted by the hypothesis.
+Stories that LLMs collectively rate as interesting are also the ones humans find more surprising.
+
+\para{H2: LLM disagreement weakly predicts engagement.}
+LLM disagreement shows a small positive correlation with human Engagement ($\rho = +0.143$, $p = 3.2 \times 10^{-6}$).
+While statistically significant, the effect size is small and may reflect the inherent complexity of variable stories rather than a genuine ``outsider'' effect.
+
+\para{H3: Low-consensus stories are less interesting to humans.}
+The Mann-Whitney $U$ test yields $p = 1.00$, indicating that stories in the bottom LLM consensus quartile are not rated higher by humans than stories in the top quartile.
+In fact, the relationship is reversed, as the quartile analysis below shows.
+
+\para{H4: The effect holds for LLM-generated stories specifically.}
+Restricting to LLM-generated stories only, the positive correlation persists ($\rho = +0.358$, $p = 1.8 \times 10^{-30}$), confirming that the finding is not driven by human-written stories.
+
+\subsection{LLM Consensus Quartile Analysis}
+\label{sec:quartiles}
+
+\Tabref{tab:quartiles} presents human interestingness ratings broken down by LLM consensus quartiles.
+The relationship is monotonically increasing: stories in the top quartile (Q4) receive 47\% higher human interestingness ratings than stories in the bottom quartile (Q1).
+
+\begin{table}[t]
+    \centering
+    \caption{Human interestingness ratings by LLM consensus quartile. Q1 contains stories rated lowest by LLM judges; Q4 contains stories rated highest. Human ratings increase monotonically with LLM consensus---the opposite of the outsider prediction.}
+    \begin{tabular}{@{}lcccc@{}}
+        \toprule
+        \textbf{LLM Quartile} & \textbf{$N$} & \textbf{Interest (mean $\pm$ SEM)} & \textbf{Surprise} & \textbf{Engagement} \\
+        \midrule
+        Q1 (low consensus) & 467 & $2.093 \pm 0.026$ & 1.858 & 2.328 \\
+        Q2 & 185 & $2.344 \pm 0.040$ & 2.050 & 2.638 \\
+        Q3 & 211 & $2.470 \pm 0.039$ & 2.148 & 2.791 \\
+        Q4 (high consensus) & 193 & $\mathbf{3.073 \pm 0.053}$ & \textbf{2.720} & \textbf{3.427} \\
+        \bottomrule
+    \end{tabular}
+    \label{tab:quartiles}
+\end{table}
+
+\subsection{Quality-Controlled Analysis}
+\label{sec:quality}
+
+\Tabref{tab:quality} reveals the critical finding: the strong raw correlation between LLM consensus and human interestingness is almost entirely explained by text quality.
+
+\begin{table}[t]
+    \centering
+    \caption{Correlation between LLM consensus and human interestingness under different controls. The raw correlation ($\rho = +0.482$) drops to near zero after controlling for human-rated quality, indicating LLMs detect quality rather than interestingness per se.}
+    \begin{tabular}{@{}lccl@{}}
+        \toprule
+        \textbf{Analysis} & \textbf{$\rho$} & \textbf{$p$-value} & \textbf{Interpretation} \\
+        \midrule
+        Raw correlation & $+0.482$ & $1.7 \times 10^{-62}$ & Strong positive \\
+        Partial (controlling quality) & $+0.002$ & $0.943$ & \textbf{Near zero} \\
+        Within-model average & $+0.205$ & --- & Weak positive \\
+        LLM-only, quality-controlled & $+0.023$ & $0.470$ & Near zero \\
+        Surprise, quality-controlled & $+0.010$ & $0.746$ & Near zero \\
+        \bottomrule
+    \end{tabular}
+    \label{tab:quality}
+\end{table}
+
+After partialing out human-rated quality (mean of all 6 dimensions), the correlation between LLM consensus and human interestingness drops from $\rho = +0.482$ to $\rho = +0.002$ ($p = 0.943$).
+This pattern holds when restricting to LLM-generated stories only ($\rho = +0.023$, $p = 0.470$) and when examining Surprise alone ($\rho = +0.010$, $p = 0.746$).
+LLMs are not biased for or against interesting content---they are detecting the same underlying quality signal that humans detect.
+
+\subsection{Extreme Group Comparison}
+\label{sec:extreme}
+
+Stories where all three LLM judges rate $\leq 2$ ($N = 463$) receive a mean human interestingness rating of 2.091, while stories where all three rate $\geq 4$ ($N = 66$) receive a mean of 3.548.
+Unanimously LLM-disliked stories are not ``hidden gems''---they are genuinely less interesting to humans as well.
+
+\subsection{Inter-LLM Agreement}
+\label{sec:agreement}
+
+The three LLM judges show high pairwise agreement: $\rho = 0.768$ (\gptfourmini vs.\ \gptfo), $\rho = 0.766$ (\gptfo vs.\ \gptfomini), and $\rho = 0.707$ (\gptfourmini vs.\ \gptfomini).
+This strong inter-judge agreement ($\rho = 0.71$--$0.77$) is consistent with prior work documenting LLM evaluation convergence~\citep{echoes2024} and validates our use of multi-judge consensus as a meaningful signal.
+
+\subsection{Arena Complementary Analysis}
+\label{sec:arena}
+
+\Tabref{tab:arena} summarizes results from 200 Chatbot Arena battles.
+LLM judges align strongly with human preferences, with 77--84\% agreement depending on the model.
+Humans chose the LLM-preferred response in 77.2\% of battles, significantly above chance ($p = 1.7 \times 10^{-11}$, binomial test).
+The human-preferred response received a higher mean LLM rating (3.29 vs.\ 2.88; paired $t = 7.88$, $p = 2.1 \times 10^{-13}$).
+
+\begin{table}[t]
+    \centering
+    \caption{Arena complementary analysis (200 battles). LLM judges align strongly with human pairwise preferences across conversational data.}
+    \begin{tabular}{@{}lc@{}}
+        \toprule
+        \textbf{Metric} & \textbf{Value} \\
+        \midrule
+        LLM-human agreement rate & 77--84\% \\
+        Human-preferred response (LLM mean) & 3.29 \\
+        Human-rejected response (LLM mean) & 2.88 \\
+        Paired $t$-test & $t = 7.88$, $p = 2.1 \times 10^{-13}$ \\
+        Fraction humans chose lower-LLM-rated & 22.8\% \\
+        Binomial test vs.\ 50\% & $p = 1.7 \times 10^{-11}$ \\
+        \bottomrule
+    \end{tabular}
+    \label{tab:arena}
+\end{table}

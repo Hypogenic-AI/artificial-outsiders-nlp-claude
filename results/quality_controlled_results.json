@@ -1,0 +1,11 @@
+{
+  "high_quality_rho": 0.3836172211630037,
+  "high_quality_p": 1.0,
+  "partial_rho": 0.002201695619994701,
+  "partial_p": 0.9430300756348763,
+  "within_model_avg_rho": 0.20525333015047043,
+  "llm_only_partial_rho": 0.023341341250168245,
+  "llm_only_partial_p": 0.47007244576831475,
+  "surprise_partial_rho": 0.009978924345423483,
+  "surprise_partial_p": 0.7460132417628728
+}

@@ -1,0 +1,18 @@
+Resource finding phase completed successfully.
+Timestamp: 2026-04-07
+Papers downloaded: 25
+Datasets downloaded: 4
+Repositories cloned: 4
+
+Key resources:
+- HANNA dataset (primary): 1,056 stories with 6-dim human ratings
+- Story Writing Benchmark: 8,520 stories from 15 LLMs with multi-LLM grading
+- MT-Bench: Human + GPT-4 evaluations on same response pairs
+- Arena 55K: 57,477 human preference battles across 64+ models
+
+Recommended experiment approach:
+1. Use HANNA stories as primary dataset
+2. Run 3-5 diverse LLM judges on each story
+3. Compute inter-LLM disagreement (variance/entropy)
+4. Correlate LLM disagreement with human Surprise + Engagement ratings
+5. Test hypothesis: high LLM disagreement → higher human interestingness

@@ -1,0 +1,699 @@
+You are an academic paper writer. Generate a complete NEURIPS style paper
+based on the experiment results provided.
+
+════════════════════════════════════════════════════════════════════════════════
+                         IMPORTANT: BEFORE YOU START
+════════════════════════════════════════════════════════════════════════════════
+
+Before writing any content, you MUST complete these steps:
+
+1. READ THE SKILL: Review the paper-writer skill at .claude/skills/paper-writer/SKILL.md
+2. READ THE STYLE GUIDE: Study templates/paper_writing/lab_style_guide.md carefully
+3. REVIEW EXAMPLES: Browse paper_examples/ for formatting and language patterns:
+   - Look at sections/1.introduction.tex for language style
+   - Look at tables/*.tex for table formatting
+   - Look at commands/*.tex for macro usage
+4. VERIFY COMMAND TEMPLATES: Command templates (math.tex, general.tex, macros.tex) are pre-copied to paper_draft/commands/
+
+CRITICAL: Reference example papers for FORMATTING and LANGUAGE STYLE only.
+Do NOT copy content, phrasing, or narrative structure from the example papers.
+The examples are in a different research domain - focus only on presentation style.
+
+════════════════════════════════════════════════════════════════════════════════
+                            EXPERIMENT REPORT
+════════════════════════════════════════════════════════════════════════════════
+
+# Artificial Outsiders: Testing Whether LLM-Disliked Text Is More Interesting to Humans
+
+## 1. Executive Summary
+
+We tested whether LLM-written documents that other LLMs rate as uninteresting are paradoxically *more* interesting to humans—the &#34;artificial outsider&#34; hypothesis. Using the HANNA dataset (1,056 stories from 11 generators with ground-truth human ratings) and 3,168 LLM judge evaluations across 3 OpenAI models, we find the hypothesis is **definitively refuted**. LLM consensus positively correlates with human interestingness (Spearman ρ = 0.48, p &lt; 10⁻⁶²), and stories all LLMs rate low receive significantly lower human interest ratings. A complementary analysis of 200 Chatbot Arena battles confirms this: humans chose the LLM-preferred response 77% of the time. However, controlling for overall text quality, the LLM-interestingness correlation drops to near zero (ρ ≈ 0.00), revealing that LLMs are primarily detecting quality rather than having a unique bias for or against &#34;interesting&#34; content.
+
+## 2. Research Question &amp; Motivation
+
+**Hypothesis**: LLM-written documents that other LLMs do not find as interesting are more likely to be interesting to humans than LLM-written documents that all LLMs like.
+
+**Why it matters**: LLMs are increasingly used as automated evaluators (LLM-as-a-judge). Prior work shows they share systematic biases—self-preference (Panickssery et al., 2024), perplexity preference (Wataoka et al., 2024), and output convergence (Echoes in AI, 2024). If LLM judges systematically undervalue interesting content, this would have major implications for content curation, recommendation, and creative AI evaluation pipelines.
+
+**Gap**: While LLM evaluation biases and output homogeneity are well-documented separately, no study has directly tested whether LLM consensus inversely predicts human interestingness.
+
+## 3. Methodology
+
+### 3.1 Experimental Setup
+
+**Primary dataset**: HANNA (Chhun et al., 2022) — 1,056 stories from 11 generators (10 LLMs + human), each rated by 3 human annotators on 6 dimensions (Relevance, Coherence, Empathy, Surprise, Engagement, Complexity) on a 1-5 Likert scale.
+
+**Human interestingness proxy**: Mean of Surprise and Engagement ratings, averaged across 3 annotators.
+
+**LLM judges**: Three OpenAI models (gpt-4o, gpt-4o-mini, gpt-4.1-mini) rated each story on a 1-5 interestingness scale at temperature=0 with seed=42.
+
+**Complementary dataset**: Arena Human Preference 55K (200 battle subsample), where both responses were rated by the 3 LLM judges and compared to the human preference vote.
+
+### 3.2 Statistical Tests
+
+| Test | Description | Multiple comparison |
+|------|-------------|-------------------|
+| H1 | Spearman ρ: LLM consensus vs Human Surprise | Bonferroni α = 0.0125 |
+| H2 | Spearman ρ: LLM disagreement (std) vs Human Engagement | Bonferroni α = 0.0125 |
+| H3 | Mann-Whitney U: bottom vs top LLM consensus quartile | Bonferroni α = 0.0125 |
+| H4 | Spearman ρ: LLM consensus vs Human interest (LLM-generated only) | Bonferroni α = 0.0125 |
+
+Additional quality-controlled analyses: partial correlations (regressing out human quality), within-model correlations, and extreme-group comparisons.
+
+### 3.3 Environment
+
+- Python 3.12, NumPy 2.2.5, Pandas 2.2.3, SciPy 1.15.2
+- OpenAI API: gpt-4o, gpt-4o-mini, gpt-4.1-mini
+- 3,168 story evaluations + 1,200 arena response evaluations
+- Random seed: 42 throughout
+- Hardware: 4x NVIDIA RTX A6000 (not needed for this API-based study)
+
+## 4. Results
+
+### 4.1 Primary Hypothesis Tests
+
+| Hypothesis | Statistic | Value | p-value | Direction | Verdict |
+|-----------|-----------|-------|---------|-----------|---------|
+| H1: LLM consensus vs Surprise | Spearman ρ | +0.402 | 3.07e-42 | Positive | **REFUTED** |
+| H2: LLM disagreement vs Engagement | Spearman ρ | +0.143 | 3.23e-06 | Positive | Supports (weakly) |
+| H3: Bottom vs Top LLM quartile | Mann-Whitney U | — | 1.00 | Low &lt; High | **REFUTED** |
+| H4: LLM-only consensus vs interest | Spearman ρ | +0.358 | 1.81e-30 | Positive | **REFUTED** |
+
+**Interpretation**: 3 of 4 tests strongly refute the hypothesis. The one supporting result (H2: disagreement correlates with engagement, ρ=0.14) has a weak effect size and may reflect that more variable stories are inherently more complex.
+
+### 4.2 LLM Consensus Quartile Analysis
+
+| LLM Consensus Quartile | N | Human Interest (mean ± SEM) | Surprise | Engagement |
+|------------------------|---|------------------------------|----------|------------|
+| Q1 (low consensus) | 467 | 2.093 ± 0.026 | 1.858 | 2.328 |
+| Q2 | 185 | 2.344 ± 0.040 | 2.050 | 2.638 |
+| Q3 | 211 | 2.470 ± 0.039 | 2.148 | 2.791 |
+| Q4 (high consensus) | 193 | 3.073 ± 0.053 | 2.720 | 3.427 |
+
+Stories in the top LLM consensus quartile have **47% higher** human interestingness than the bottom quartile (3.07 vs 2.09). The relationship is monotonically increasing—exactly opposite to the hypothesis.
+
+### 4.3 Quality-Controlled Analyses
+
+| Analysis | ρ | p-value | Interpretation |
+|----------|---|---------|---------------|
+| Raw correlation | +0.482 | 1.65e-62 | Strong positive |
+| Partial (controlling for quality) | +0.002 | 0.943 | **Near zero** |
+| Within-model average | +0.205 | — | Weak positive |
+| LLM-only, quality-controlled | +0.023 | 0.470 | Near zero |
+| Surprise, quality-controlled | +0.010 | 0.746 | Near zero |
+
+**Key finding**: The raw correlation is almost entirely explained by text quality. After partialing out human-rated quality, LLM consensus has essentially zero correlation with human interestingness (ρ = 0.002). LLMs are not biased for or against interesting content—they are simply detecting the same quality signal humans detect.
+
+### 4.4 Extreme Group Comparison
+
+| Group | N | Human Interest |
+|-------|---|---------------|
+| All 3 LLMs rate ≤ 2 | 463 | 2.091 |
+| All 3 LLMs rate ≥ 4 | 66 | 3.548 |
+
+Stories unanimously disliked by all LLM judges are **not** hidden gems—they are genuinely less interesting to humans too.
+
+### 4.5 Arena Complementary Analysis (200 battles)
+
+| Metric | Value |
+|--------|-------|
+| LLM judge agreement with human preference | 77-84% |
+| Human-preferred response LLM mean | 3.29 |
+| Human-rejected response LLM mean | 2.88 |
+| Paired t-test | t = 7.88, p = 2.1e-13 |
+| Fraction humans chose lower-LLM-rated response | 22.8% |
+| Binomial test vs 50% | p = 1.74e-11 |
+
+LLM judges align strongly with human preferences in head-to-head battles, with 77-84% agreement rates depending on the model.
+
+### 4.6 Inter-LLM Agreement
+
+| Model Pair | Spearman ρ |
+|-----------|-----------|
+| GPT-4.1-mini vs GPT-4o | 0.768 |
+| GPT-4.1-mini vs GPT-4o-mini | 0.707 |
+| GPT-4o vs GPT-4o-mini | 0.766 |
+
+The three LLM judges show high agreement (ρ = 0.71–0.77), consistent with prior work on LLM evaluation convergence.
+
+### 4.7 Per-Model Correlation with Human Interest
+
+All source models show positive or near-zero correlations between LLM consensus and human interestingness. Only CTRL shows a very weak negative (ρ = -0.05, ns). The within-model average is ρ = +0.21, confirming the positive relationship holds even after controlling for model-level quality differences.
+
+## 5. Analysis &amp; Discussion
+
+### 5.1 Why the Hypothesis Is Refuted
+
+The &#34;artificial outsider&#34; hypothesis rests on three premises:
+1. LLMs share evaluation biases that make them prefer homogeneous text
+2. Text that deviates from the LLM-preferred distribution is more novel
+3. Novelty/deviation translates to higher human interest
+
+Our results show that **premise 3 fails**. While premises 1 and 2 may hold in some form (the LLM judges do agree closely with each other, ρ ≈ 0.75), the deviation from LLM preferences does not predict higher human interest. Instead, LLM-disliked text is simply lower quality, and humans also find lower-quality text less interesting.
+
+### 5.2 The Quality Confound
+
+The most important finding is the quality confound analysis. The raw ρ = +0.48 drops to ρ ≈ 0.00 after controlling for quality. This means:
+- LLMs and humans agree almost perfectly on what constitutes good vs. bad text
+- Beyond quality, LLMs have no additional bias for or against &#34;interesting&#34; content
+- The outsider hypothesis conflates &#34;quality outlier&#34; with &#34;interestingness outlier&#34;
+
+### 5.3 When Might the Hypothesis Hold?
+
+The hypothesis could still hold in specific conditions not tested here:
+1. **Modern high-quality LLMs**: HANNA uses old models (GPT-2 era) with high quality variance. For modern models where all outputs are competent, the quality confound is weaker, and the interestingness signal might emerge.
+2. **Specific domains**: Creative writing at the frontier (poetry, literary fiction) where &#34;interesting&#34; means &#34;rule-breaking&#34; rather than &#34;well-executed.&#34;
+3. **Different operationalization**: &#34;Interestingness&#34; may need to be measured as novelty or surprise specifically, not overall engagement.
+
+### 5.4 Comparison with Literature
+
+Our finding that LLM judges achieve 77-84% agreement with human preferences aligns with Zheng et al. (2023), who report ~80% GPT-4-human agreement on MT-Bench. The high inter-LLM agreement (ρ ≈ 0.75) confirms the convergence documented by Echoes in AI (2024). However, our quality-controlled result (ρ ≈ 0.00) is novel and suggests that while LLMs share biases, these biases are largely the *same* biases humans have.
+
+## 6. Limitations
+
+1. **Dataset age**: HANNA&#39;s generators are from the GPT-2 era (2019-2022). Text quality varies from near-gibberish to coherent. The hypothesis was likely intended for modern, high-quality LLM text.
+2. **LLM judge diversity**: All 3 judges are OpenAI models. Using models from different families (Claude, Gemini, Llama) could reveal more meaningful disagreement.
+3. **Interestingness proxy**: We used Surprise + Engagement from HANNA, not a direct &#34;interestingness&#34; rating. These may not capture the full concept.
+4. **Domain specificity**: Results are from short creative fiction (HANNA) and general chatbot conversations (Arena). Other domains (research ideas, essays, journalism) may differ.
+5. **Sample size for Arena**: Only 200 battles were evaluated, limiting statistical power for subgroup analyses.
+
+## 7. Conclusions &amp; Next Steps
+
+**Answer to research question**: The hypothesis that LLM-disliked text is more interesting to humans is **not supported**. LLM consensus positively predicts human interestingness (ρ = +0.48), driven primarily by shared quality perception. After controlling for quality, the correlation drops to near zero—LLMs show no special bias for or against interesting content.
+
+**Practical implications**: LLM-as-a-judge is a reasonable proxy for human interestingness judgments in creative writing evaluation. Content curators can use LLM ratings as a first filter without systematically missing &#34;hidden gems.&#34;
+
+**Recommended follow-up experiments**:
+1. Repeat with modern LLM outputs (GPT-4, Claude 3.5, Gemini 2.5) where quality is uniformly high, isolating the interestingness signal
+2. Use diverse LLM judge families (not just OpenAI) to test if cross-family disagreement predicts human interest differently
+3. Collect direct human &#34;interestingness&#34; ratings (not proxy through Surprise + Engagement)
+4. Test in domains beyond creative fiction—research abstracts, news articles, product descriptions
+
+## References
+
+1. Panickssery et al. (2024). &#34;LLM Evaluators Recognize and Favor Their Own Generations.&#34; arXiv:2404.13076
+2. Wataoka et al. (2024). &#34;Self-Preference Bias in LLM-as-a-Judge.&#34; arXiv:2410.21819
+3. Zheng et al. (2023). &#34;Judging LLM-as-a-judge with MT-Bench and Chatbot Arena.&#34; arXiv:2306.05685
+4. Koo et al. (2023). &#34;CoBBLEr: Cognitive Bias Benchmark for LLMs as Evaluators.&#34; arXiv:2309.17012
+5. Echoes in AI (2024). &#34;Quantifying Lack of Plot Diversity in LLM Outputs.&#34; arXiv:2501.00273
+6. Doshi &amp; Hauser (2024). &#34;Generative AI Enhances Creativity but Reduces Diversity.&#34; Science Advances
+7. Wu &amp; Aji (2023). &#34;Style Over Substance.&#34; arXiv:2307.03025
+8. Chhun et al. (2022). &#34;HANNA: Human-Annotated NArrative dataset.&#34; (HuggingFace: llm-aes/hanna)
+9. LMSYS (2023). &#34;Arena Human Preference 55K.&#34; (HuggingFace: lmarena-ai/arena-human-preference-55k)
+
+
+════════════════════════════════════════════════════════════════════════════════
+                            RESEARCH PLAN
+════════════════════════════════════════════════════════════════════════════════
+
+# Research Plan: Artificial Outsiders
+
+## Motivation &amp; Novelty Assessment
+
+### Why This Research Matters
+LLMs are increasingly used to evaluate text quality (LLM-as-a-judge), but they share systematic biases — preferring lower-perplexity, more familiar text (Wataoka et al., 2024) and exhibiting self-preference (Panickssery et al., 2024). If LLM judges converge on preferring homogeneous text, they may systematically undervalue the most interesting and novel content — exactly what matters most in creative writing, ideation, and content discovery. Understanding this bias is critical for anyone using LLM evaluation in production.
+
+### Gap in Existing Work
+Prior work documents (1) LLM self-preference bias, (2) LLM output convergence/low diversity, and (3) human-LLM preference misalignment — but **no study directly tests whether LLM-judged &#34;outsiders&#34; are more interesting to humans**. The literature treats these as separate phenomena. We unify them into one testable prediction.
+
+### Our Novel Contribution
+We test whether inter-LLM consensus on text quality is **inversely** correlated with human-judged interestingness. Specifically: LLM-written stories that multiple LLMs rate low or disagree about may be more surprising and engaging to human readers than stories all LLMs rate highly.
+
+### Experiment Justification
+- **Experiment 1 (HANNA dataset)**: Core hypothesis test. HANNA has 1,056 stories with ground-truth human ratings on Surprise and Engagement. We add multi-LLM judge ratings and test the correlation. This is needed because no existing dataset has both multi-LLM judge scores and human interestingness ratings for the same texts.
+- **Experiment 2 (Arena dataset)**: Robustness check on conversational data. Arena has 55K human preference votes. We sample responses, get LLM ratings, and check whether human-preferred responses are ones LLMs disagree about.
+- **Experiment 3 (Controlled generation)**: We generate stories at different creativity levels (temperature), have LLMs judge them, and see which temperature settings produce &#34;outsiders&#34; that score differently with LLMs vs. would with humans (using HANNA-calibrated patterns).
+
+## Research Question
+Do LLM-written texts that receive low or divergent ratings from multiple LLM judges receive higher human ratings on interestingness (surprise + engagement) compared to texts that all LLM judges rate highly?
+
+## Hypothesis Decomposition
+- **H1**: LLM judge consensus (mean rating across judges) is negatively correlated with human Surprise ratings.
+- **H2**: LLM judge disagreement (variance across judges) is positively correlated with human Engagement ratings.
+- **H3**: Stories in the bottom quartile of LLM consensus have higher human interestingness than stories in the top quartile.
+- **H4**: The effect holds specifically for LLM-generated stories (not just human-written ones which LLMs might rate low for other reasons).
+
+## Proposed Methodology
+
+### Approach
+Use the HANNA dataset as primary testbed. It has 1,056 stories from 11 generators (10 LLMs + human) with 3 human annotators each rating Surprise, Engagement, and 4 other dimensions. We add ratings from 3 diverse OpenAI LLM judges (GPT-4o, GPT-4o-mini, GPT-4.1) and test correlations.
+
+### Experimental Steps
+1. Load and preprocess HANNA: aggregate human ratings per story (mean of 3 annotators)
+2. Design interestingness rating prompt for LLM judges
+3. Call 3 LLM models to rate each of 1,056 stories on a 1-5 interestingness scale
+4. Compute per-story: LLM consensus (mean), LLM disagreement (std dev), human interestingness (mean of Surprise + Engagement)
+5. Statistical analysis: correlations, group comparisons, regression
+6. Complementary analysis on Arena Human Preference 55K subset
+
+### Baselines
+- **Null hypothesis**: LLM consensus positively predicts human interest (higher LLM mean → higher human interest)
+- **Single-judge baseline**: GPT-4o alone predicts human interest
+- **Quality baseline**: Overall quality (mean of all 6 human dimensions) vs. interestingness-specific signal
+
+### Evaluation Metrics
+- Spearman&#39;s rank correlation between LLM consensus and human interestingness
+- Spearman&#39;s rank correlation between LLM disagreement and human interestingness
+- Mann-Whitney U test comparing human ratings of top vs bottom LLM consensus quartiles
+- Effect sizes (Cohen&#39;s d)
+
+### Statistical Analysis Plan
+- Primary: Spearman correlations with 95% bootstrap CIs
+- Group comparison: Mann-Whitney U (non-parametric, no normality assumption)
+- Multiple comparison correction: Bonferroni for the 4 hypothesis tests
+- Significance level: α = 0.05 (Bonferroni-corrected: 0.0125)
+- Robustness: repeat analysis separately for LLM-generated vs. human-written stories
+
+## Expected Outcomes
+- **Supporting H**: Negative correlation between LLM consensus and human Surprise/Engagement, especially for LLM-generated text
+- **Refuting H**: Positive correlation or no correlation — LLM judges and humans agree on interestingness
+- **Nuanced**: Effect may depend on story source model — newer/better LLMs may produce &#34;outliers&#34; that are genuinely bad rather than interestingly different
+
+## Timeline
+1. Environment &amp; data prep: 15 min
+2. LLM evaluation pipeline: 30 min (implementation + API calls)
+3. Statistical analysis: 30 min
+4. Complementary experiments: 30 min
+5. Documentation: 30 min
+
+## Potential Challenges
+- API rate limits → use exponential backoff
+- HANNA&#39;s LLM models are old (GPT-2 era) → findings may not generalize to modern LLMs → address with Arena analysis
+- 3 LLM judges may not capture enough variance → mitigate by using architecturally diverse models
+- &#34;Interestingness&#34; is subjective → use established Surprise + Engagement dimensions from HANNA
+
+## Success Criteria
+- Clear statistical test of all 4 sub-hypotheses with proper correction
+- At least one significant result (positive or negative) with adequate effect size
+- Honest reporting regardless of direction
+
+
+════════════════════════════════════════════════════════════════════════════════
+                          LITERATURE REVIEW
+════════════════════════════════════════════════════════════════════════════════
+
+# Literature Review: Artificial Outsiders
+
+## Research Hypothesis
+LLM-written documents that other LLMs do not find as interesting are more likely to be interesting to humans than LLM-written documents that all LLMs like.
+
+---
+
+## Research Area Overview
+
+This hypothesis sits at the intersection of three active research areas: (1) **LLM-as-a-Judge** evaluation methodology and its biases, (2) **human vs. AI preferences** for generated text, and (3) **diversity and creativity** in LLM outputs. The core insight is that LLM evaluators share systematic biases (self-preference, perplexity preference, style-over-substance) that cause them to converge on preferring certain types of text. Text that breaks these patterns---&#34;artificial outsiders&#34;---may actually be more interesting to humans precisely because it deviates from the homogeneous distribution LLMs both produce and prefer.
+
+---
+
+## Key Papers
+
+### 1. LLM Self-Preference and Recognition
+
+**Panickssery et al. (2024) - &#34;LLM Evaluators Recognize and Favor Their Own Generations&#34;** [arXiv:2404.13076]
+- **Key Finding**: LLMs (GPT-4, GPT-3.5, Llama 2) exhibit significant self-preference bias, rating their own outputs higher than competitors&#39;. Crucially, they can recognize their own outputs with non-trivial accuracy (GPT-4: 73.5%).
+- **Methodology**: Fine-tuning experiments on XSUM and CNN/DailyMail show a linear correlation between self-recognition capability and self-preference strength.
+- **Implication for our research**: If LLMs prefer their own outputs, then text that multiple LLMs dislike may be text that deviates from the shared LLM &#34;style&#34;---potentially more novel/interesting to humans.
+- **Code**: https://bit.ly/llm_self_recognition
+
+**Wataoka et al. (2024) - &#34;Self-Preference Bias in LLM-as-a-Judge&#34;** [arXiv:2410.21819]
+- **Key Finding**: Self-preference is driven by **perplexity preference**---LLMs assign higher scores to lower-perplexity (more familiar) text, regardless of authorship. GPT-4 shows self-preference bias of 0.52 on their metric.
+- **Methodology**: Novel Equal Opportunity-based metric on Chatbot Arena data (33K dialogues, 8 LLMs). Analyzed winning judgment rates conditioned on perplexity differences.
+- **Critical insight**: The bias is about familiarity, not identity. LLMs prefer text that looks like what they would generate. This directly supports our hypothesis: &#34;outsider&#34; text (high perplexity to multiple LLMs) deviates from the shared distribution.
+- **Datasets**: Chatbot Arena
+
+**Koo et al. (2023) - &#34;CoBBLEr: Cognitive Bias Benchmark for LLMs as Evaluators&#34;** [arXiv:2309.17012]
+- **Key Finding**: LLMs exhibit 6 cognitive biases as evaluators, with egocentric bias (self-preference) being prominent. Average RBO between human and machine preferences is only 0.44, indicating substantial misalignment.
+- **Methodology**: 16 LLMs evaluated pairwise on 50 QA instructions from ELI5 and BigBench, creating 630K comparison samples.
+- **Implication**: The 56% misalignment between humans and LLMs suggests systematic divergence in what each values.
+- **Code**: https://github.com/minnesotanlp/cobbler
+
+### 2. LLM Evaluation Biases
+
+**Zheng et al. (2023) - &#34;Judging LLM-as-a-judge with MT-Bench and Chatbot Arena&#34;** [arXiv:2306.05685]
+- **Key Finding**: Strong LLM judges (GPT-4) achieve ~80% agreement with humans, but exhibit position, verbosity, and self-enhancement biases. This is the same agreement level as human-human.
+- **Datasets**: MT-bench (80 multi-turn questions), Chatbot Arena (30K conversations). Both publicly available.
+- **Code**: https://github.com/lm-sys/FastChat
+
+**Wu &amp; Aji (2023) - &#34;Style Over Substance&#34;** [arXiv:2307.03025]
+- **Key Finding**: Both human and LLM evaluators prefer longer, grammatically polished text over shorter or less fluent text---even when the polished text contains factual errors. Factually incorrect answers are rated higher than grammatically imperfect ones.
+- **Methodology**: GPT-4-generated answers with controlled flaws (factual errors, grammar errors, short length) evaluated by crowd workers, experts, GPT-4, and Claude-1 using Elo ratings.
+- **Implication**: LLMs and humans share some biases (length, fluency) but diverge on others (factual accuracy). The &#34;style over substance&#34; bias means LLMs may universally prefer polished-but-bland text over rough-but-interesting text.
+
+**Wang et al. (2023) - &#34;Large Language Models are not Fair Evaluators&#34;** [arXiv:2310.01432]
+- **Key Finding**: LLM evaluation rankings can be easily manipulated by altering response order. Proposes calibration strategies.
+- **Code**: https://github.com/i-Eval/FairEval
+
+**Stureborg et al. (2024) - &#34;Large Language Models are Inconsistent and Biased Evaluators&#34;** [arXiv:2405.01724]
+- **Key Finding**: LLMs show familiarity bias (preference for lower-perplexity text), skewed rating distributions, and anchoring effects. Low inter-sample agreement shows inconsistency.
+- **Datasets**: SummEval, RoSE
+
+### 3. LLM Output Diversity and Creativity
+
+**Echoes in AI (2024) - &#34;Quantifying Lack of Plot Diversity in LLM Outputs&#34;** [arXiv:2501.00273]
+- **Key Finding**: LLM outputs are dramatically less diverse than human writing. They introduce the **Sui Generis score** measuring plot-level uniqueness. Human stories score significantly higher. Even across different LLMs, outputs converge on similar narrative solutions.
+- **Methodology**: 100 stories from WritingPrompts and Wikipedia TV plots. Generated 20 alternative continuations at each position. GPT-4 judges semantic entailment.
+- **Critical insight**: Cross-model echo rates show LLaMA-3 outputs appear in GPT-4 continuations almost as frequently as in their own---LLMs share a common &#34;boring&#34; distribution. Text outside this distribution (low echo rate) is genuinely more unique.
+- **Implication**: Directly supports our hypothesis. The &#34;artificial outsider&#34; is text in the tail of the shared LLM distribution.
+
+**Doshi &amp; Hauser (2024) - &#34;Generative AI Enhances Creativity but Reduces Diversity&#34;** [arXiv:2312.00506, Science Advances]
+- **Key Finding**: GenAI access makes individual stories better-written and more enjoyable (especially for less creative writers), but GenAI-enabled stories are more similar to each other. Individual creativity up, collective diversity down.
+- **Methodology**: Pre-registered experiment with 293 writers (3 conditions: no AI, 1 AI idea, 5 AI ideas) evaluated by 600 evaluators on novelty, usefulness, and emotional characteristics.
+- **Implication**: The creativity-diversity tradeoff is central to our hypothesis. GenAI homogenizes content, and the rare outliers that break this pattern may be disproportionately interesting.
+
+**Chakrabarty et al. (2023) - &#34;Art or Artifice?&#34;** [arXiv:2309.14556]
+- **Key Finding**: LLMs generate text rated as creative by automated metrics but lacking in genuine novelty and surprise when closely analyzed by experts.
+- **Evaluation**: Comprehensive multi-model evaluation on creative writing tasks.
+
+**Gomez-Rodriguez &amp; Williams (2023) - &#34;A Confederacy of Models&#34;** [arXiv:2310.08433]
+- **Key Finding**: Blind human evaluation of 65 stories from 13 LLMs found significant quality variation across models, with human-written stories often preferred for originality and humor.
+- **Datasets**: 65 stories with human ratings (fluency, coherence, originality, humor, style).
+- **Code**: https://github.com/komoku/confederacy-of-models
+
+### 4. Human vs. AI Preferences
+
+**Porter et al. (2024) - &#34;AI-generated Poetry Rated More Favorably&#34;** [Scientific Reports]
+- **Key Finding**: Humans rated AI-generated poems higher than human-written poems in a blind study, possibly because AI poems are more &#34;accessible&#34; and less challenging.
+- **Implication**: Suggests humans may prefer &#34;easier&#34; AI text in some contexts, but this may be about surface appeal vs. depth.
+
+**Si et al. (2024) - &#34;Can LLMs Generate Novel Research Ideas?&#34;** [arXiv:2409.04109]
+- **Key Finding**: LLM-generated research ideas were rated as more novel than expert-written ones but less feasible. Experts judged LLM ideas as sometimes &#34;surprisingly creative.&#34;
+
+**Diverging Preferences (2024)** [arXiv:2410.14632]
+- **Key Finding**: Examines when annotators disagree and whether models can predict disagreement. Relevant to understanding when humans diverge from LLM consensus.
+
+---
+
+## Common Methodologies
+
+1. **Pairwise comparison with Elo/Bradley-Terry**: Used in Chatbot Arena, MT-Bench, CoBBLEr. Standard for ranking LLM outputs.
+2. **Multi-dimensional Likert rating**: Used in HANNA (6 dimensions), MERS (3 dimensions). Better for measuring specific quality aspects.
+3. **Perplexity-based analysis**: Wataoka et al., Stureborg et al. show perplexity as a proxy for LLM familiarity.
+4. **Controlled perturbation**: Wu &amp; Aji, OffsetBias introduce controlled flaws to measure bias sensitivity.
+5. **Cross-model evaluation**: CoBBLEr, Echoes in AI evaluate how different LLMs judge each other&#39;s outputs.
+
+## Standard Baselines
+
+- **Random baseline**: Expected agreement if judges were random
+- **GPT-4 as judge**: De facto standard LLM judge (Zheng et al., 2023)
+- **Human inter-annotator agreement**: Typically 60-80% pairwise agreement
+- **Perplexity-based ranking**: Rank by model perplexity as a null hypothesis
+
+## Evaluation Metrics
+
+- **Inter-judge agreement** (Cohen&#39;s kappa, Fleiss&#39; kappa, RBO): Measures consensus among LLM judges
+- **Human-LLM correlation** (Spearman&#39;s rho, Kendall&#39;s tau): Measures alignment between human and LLM preferences
+- **Self-preference bias** (Wataoka metric, Panickssery fine-tuning correlation): Quantifies egocentric evaluation
+- **Sui Generis score**: Measures plot-level uniqueness/surprise in narratives
+- **Semantic similarity** (embedding cosine distance): Measures inter-story diversity
+
+## Datasets in the Literature
+
+| Dataset | Used In | Task | Human Evals | LLM Evals |
+|---------|---------|------|-------------|-----------|
+| HANNA | Chhun et al. (2022) | Story generation | 6-dim Likert | Available |
+| Chatbot Arena | Zheng et al. (2023) | Open-ended chat | Pairwise votes | Available |
+| MT-Bench | Zheng et al. (2023) | Multi-turn QA | Expert pairwise | GPT-4 judge |
+| WritingPrompts | Echoes in AI (2024) | Creative stories | Human surprise | LLM continuations |
+| Story Writing Benchmark | lars76 | Creative stories | None | Multi-LLM grading |
+| ELI5 + BigBench | Koo et al. (2023) | QA | Human ranking | 16 LLM rankings |
+
+---
+
+## Gaps and Opportunities
+
+1. **No study directly tests our hypothesis**: While self-preference, familiarity bias, and diversity reduction are well-documented separately, no paper asks whether LLM-judged &#34;outliers&#34; are more interesting to humans.
+
+2. **Cross-LLM disagreement is understudied**: Most papers measure single-LLM bias. The signal from *inter-LLM disagreement* (what happens when LLMs disagree about text quality) is unexplored.
+
+3. **&#34;Interestingness&#34; is underspecified**: Papers measure quality, coherence, creativity, but &#34;interestingness&#34; as a dimension is rarely directly evaluated. The HANNA dataset&#39;s &#34;Surprise&#34; and &#34;Engagement&#34; dimensions are closest.
+
+4. **The outlier hypothesis is novel**: Combining the self-preference bias finding (LLMs prefer familiar text) with the diversity finding (LLMs converge on similar outputs) yields the testable prediction that inter-LLM consensus inversely correlates with human interest.
+
+---
+
+## Recommendations for Our Experiment
+
+### Recommended Datasets
+1. **HANNA** (primary): 1,056 stories from 10 generators + human with 6-dim Likert ratings. Add multi-LLM evaluations.
+2. **Story Writing Benchmark** (complementary): 8,520 stories from 15 LLMs with multi-LLM grading. Add human evaluations on a subsample.
+3. **Arena Human Preference 55K**: Largest human preference dataset. Add multi-LLM evaluations on a subsample.
+4. **MT-Bench Human Judgments**: Already has both human and GPT-4 evaluations.
+
+### Recommended Baselines
+1. **LLM consensus = human preference** (null hypothesis): Average LLM judge score predicts human rating
+2. **Single best LLM judge**: GPT-4 alone predicts human preference
+3. **Perplexity ranking**: Lower perplexity = higher quality
+
+### Recommended Metrics
+1. **LLM disagreement score**: Variance or entropy across multiple LLM judges&#39; ratings
+2. **Human interestingness rating**: Direct Likert rating on engagement/surprise/interest
+3. **Correlation between LLM disagreement and human interest**: The core test of our hypothesis
+4. **Conditional analysis**: For texts where LLMs agree it&#39;s bad vs. where they disagree, compare human ratings
+
+### Methodological Considerations
+- Use 3-5 diverse LLM judges (e.g., GPT-4, Claude, Llama, Mistral, Gemma) to capture meaningful disagreement
+- Control for text quality: distinguish &#34;LLMs disagree because it&#39;s genuinely unusual&#34; from &#34;LLMs disagree because it&#39;s low quality&#34;
+- Use both pairwise and absolute scoring to triangulate
+- Apply position and length debiasing (FairEval, OffsetBias methods)
+- Focus on creative/open-ended text where &#34;interestingness&#34; is meaningful (not factual QA)
+
+
+════════════════════════════════════════════════════════════════════════════════
+                          PAPER REQUIREMENTS
+════════════════════════════════════════════════════════════════════════════════
+
+Generate a complete academic paper with the following structure:
+
+1. TITLE
+   - Clear, specific, informative
+   - Should convey main finding or contribution
+
+2. AUTHOR
+   - Use this exact author line in the \author{} block: Ari Holtzman and NeuriCo
+
+3. ABSTRACT (150-250 words)
+   - Problem statement
+   - Approach
+   - Key results
+   - Significance
+
+4. INTRODUCTION
+   - Research problem and motivation
+   - Gap in existing work
+   - Our contribution (be specific)
+   - Paper organization
+
+5. RELATED WORK
+   - Organized by theme/approach
+   - Position our work relative to prior work
+   - Cite papers from literature review
+
+6. METHODOLOGY
+   - Clear description of approach
+   - Experimental setup
+   - Datasets used
+   - Evaluation metrics
+   - Baselines
+
+7. RESULTS
+   - Present results with tables and figures
+   - Statistical analysis
+   - Comparison to baselines
+   - Ablation studies (if applicable)
+
+8. DISCUSSION
+   - Interpretation of results
+   - Limitations
+   - Broader implications
+
+9. CONCLUSION
+   - Summary of contributions
+   - Key findings
+   - Future work
+
+10. REFERENCES
+   - BibTeX format
+   - All cited papers
+
+════════════════════════════════════════════════════════════════════════════════
+                          OUTPUT FORMAT
+════════════════════════════════════════════════════════════════════════════════
+
+Create a MODULAR LaTeX project with the following directory structure:
+
+paper_draft/
+├── main.tex              # Main file that imports all sections
+├── references.bib        # BibTeX references
+├── sections/
+│   ├── abstract.tex      # Abstract content
+│   ├── introduction.tex  # Introduction section
+│   ├── related_work.tex  # Related work section
+│   ├── methodology.tex   # Methodology section
+│   ├── results.tex       # Results section
+│   ├── discussion.tex    # Discussion section
+│   └── conclusion.tex    # Conclusion section
+├── figures/              # Directory for any generated figures
+├── tables/               # Directory for complex standalone tables
+└── appendix/             # Directory for appendix sections (if needed)
+
+INSTRUCTIONS:
+1. First, create the directory structure above (mkdir -p paper_draft/sections paper_draft/figures paper_draft/tables paper_draft/appendix)
+2. Write main.tex using the EXACT preamble for NEURIPS:
+
+   \documentclass{article}
+   \usepackage[final]{neurips_2025}  % NEURIPS style (neurips_2025.sty is in paper_draft/)
+   \usepackage[hidelinks]{hyperref}  % REQUIRED: clickable links
+   \usepackage{booktabs}  % REQUIRED: professional tables
+   \usepackage{graphicx}
+   \usepackage{amsmath,amssymb}
+
+   % Import command files
+   \input{commands/math}
+   \input{commands/general}
+   \input{commands/macros}
+
+   % Use this bibliography style:
+   \bibliographystyle{plainnat}
+
+   \author{Ari Holtzman and NeuriCo}
+
+   - Use \input{sections/...} to include each section
+   - Use \bibliography{references} for references
+3. Write each section file with COMPLETE content (no placeholders)
+4. Each section file should include its \section{} command
+5. Write references.bib with all citations in BibTeX format
+6. After writing all files, compile the paper:
+   cd paper_draft && pdflatex -interaction=nonstopmode main.tex && bibtex main && pdflatex -interaction=nonstopmode main.tex && pdflatex -interaction=nonstopmode main.tex
+
+This modular structure allows humans to easily:
+- Edit individual sections without navigating a large file
+- Track changes per section
+- Reuse sections across different paper versions
+
+════════════════════════════════════════════════════════════════════════════════
+                          QUALITY REQUIREMENTS
+════════════════════════════════════════════════════════════════════════════════
+
+- Academic tone throughout
+- All claims must be supported by data from the experiment report
+- Proper citations using \cite{} commands
+- Clear figures and tables with proper captions
+- NO placeholder text - every section must have real content
+- The paper MUST compile without errors
+- If compilation fails, debug and fix the LaTeX errors
+
+════════════════════════════════════════════════════════════════════════════════
+                          LAB WRITING STYLE
+════════════════════════════════════════════════════════════════════════════════
+
+Follow these lab-specific conventions to match our paper style:
+
+1. LANGUAGE STYLE:
+   - Use active voice: "We propose", "We examine", "We focus on"
+   - Be direct and confident: "Our main question is...", "We hypothesize that..."
+   - State things clearly and simply - prefer plain language over jargon
+   - Use bold questions as paragraph organizers: {\bf what is X?}
+   - Include specific quantitative claims: "8.97% over baseline"
+   - Avoid fancy wording: "utilize" → "use", "facilitate" → "help"
+
+2. INTRODUCTION STRUCTURE:
+   - Engaging hook (get to the point quickly)
+   - Problem importance
+   - Gap identification
+   - Your approach with method figure reference
+   - Quantitative preview of results
+   - Contribution bullets (3-4 items, action verbs)
+
+3. CONTRIBUTION LISTS:
+   \begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+       \item We propose...
+       \item We conduct...
+       \item We complement...
+   \end{itemize}
+
+4. MODULAR COMMANDS STRUCTURE:
+   Command templates are pre-copied to paper_draft/commands/:
+   - math.tex: Math notation macros
+   - general.tex: Formatting macros
+   - macros.tex: Project-specific term definitions (customize this for your paper)
+
+   In main.tex, include:
+   \input{commands/math}
+   \input{commands/general}
+   \input{commands/macros}
+
+5. REFERENCE CONVENTIONS:
+   Use reference macros from math.tex:
+   - \figref{fig:name} for "figure 1" (lowercase, in-sentence)
+   - \Figref{fig:name} for "Figure 1" (capitalized, start of sentence)
+   - \secref{sec:name} for "section 2"
+
+6. TEXT FORMATTING:
+   - Use \para{Header text} for bold paragraph headers
+   - Define method/dataset names with \textsc and \xspace:
+     \newcommand{\methodname}{\textsc{MethodName}\xspace}
+
+7. TABLE FORMATTING:
+   - Use booktabs package (no vertical lines)
+   - Use \resizebox{\textwidth}{!}{...} for wide tables
+   - Use @{} to remove padding at table edges
+   - Use \cmidrule(lr){x-y} for sub-headers
+   - Use \textsc{} for dataset/method names in headers
+   - Bold best results with {\bf ...}
+
+8. FIGURE FORMATTING:
+   - Use 0.32\textwidth for 3-column subfigures
+   - Use 0.95\linewidth for full-width figures
+   - Use \input{figures/legend} for shared legends
+   - Write self-contained captions explaining key observations
+
+9. RESULTS PRESENTATION:
+   - Define \increase and \decrease for colored arrows (green up, red down)
+   - Bold best results in tables
+   - Report confidence intervals when available
+
+10. ALGORITHM STYLING:
+    - Use algpseudocode with [noend]
+    - Use \triangleright for comments
+
+11. HYPERLINKS (REQUIRED):
+    - Always use \usepackage[hidelinks]{hyperref} or with colored links
+    - All citations, section refs, figure refs, table refs must be clickable
+    - This is essential for reader navigation
+
+════════════════════════════════════════════════════════════════════════════════
+                          WORKFLOW: REVIEW AND REFLECT
+════════════════════════════════════════════════════════════════════════════════
+
+Before calling finish, you MUST complete these review steps:
+
+1. REVIEW RESOURCES (at the start):
+   - Read .claude/skills/paper-writer/SKILL.md for detailed guidance
+   - Study templates/paper_writing/lab_style_guide.md for style conventions
+   - Browse paper_examples/ for formatting and language patterns
+
+2. SELF-REFLECTION (before finishing):
+   After writing all sections, review your work against these criteria:
+
+   LANGUAGE CHECK:
+   - [ ] Is the writing clear and jargon-free?
+   - [ ] Are claims specific with quantitative support?
+   - [ ] Is active voice used throughout?
+
+   FORMATTING CHECK:
+   - [ ] Does main.tex include \input{commands/math}, \input{commands/general}, \input{commands/macros}?
+   - [ ] Is hyperref package included for clickable references?
+   - [ ] Do tables use booktabs (no vertical lines)?
+   - [ ] Are best results bolded in tables?
+   - [ ] Are figures/tables properly captioned?
+
+   STRUCTURE CHECK:
+   - [ ] Does introduction follow: hook → importance → gap → approach → preview → contributions?
+   - [ ] Are contribution bullets specific with action verbs?
+   - [ ] Does the paper compile without errors?
+
+3. FIX ISSUES:
+   - Address any issues found in the self-reflection
+   - Re-compile and verify the PDF looks correct
+
+Only after completing this review should you consider the paper finished.

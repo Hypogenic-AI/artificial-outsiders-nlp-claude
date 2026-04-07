@@ -1,0 +1,66 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Why the Hypothesis Fails}
+\label{sec:why_fails}
+
+The artificial outsider hypothesis rests on three premises: (1) LLMs share evaluation biases that make them prefer homogeneous text; (2) text that deviates from the LLM-preferred distribution is more novel; and (3) novelty translates to higher human interest.
+Our results show that premise (3) fails.
+While the LLM judges do agree closely with each other ($\rho \approx 0.75$), lending some support to premise (1), deviation from LLM preferences does not predict higher human interest.
+LLM-disliked text is simply lower quality, and humans also find lower-quality text less interesting.
+
+\subsection{The Quality Confound}
+\label{sec:quality_confound}
+
+The most important finding of this work is the quality confound.
+The raw correlation of $\rho = +0.48$ between LLM consensus and human interestingness drops to $\rho \approx 0.00$ after controlling for overall text quality.
+This has three implications.
+First, LLMs and humans agree almost perfectly on what constitutes good versus bad text.
+Second, beyond quality, LLMs have no additional bias for or against interesting content.
+Third, the outsider hypothesis conflates ``quality outlier'' with ``interestingness outlier''---these are different things, and the former dominates.
+
+This finding also constrains how to interpret prior work on LLM evaluation biases.
+While LLMs exhibit self-preference~\citep{panickssery2024llm} and perplexity preference~\citep{wataoka2024self}, these biases appear to be largely \emph{aligned} with human quality judgments rather than opposed to them.
+The biases are real, but they do not cause LLMs to systematically miss interesting content.
+
+\subsection{When Might the Hypothesis Hold?}
+\label{sec:when_hold}
+
+Our results do not rule out the outsider hypothesis in all settings.
+Three conditions not tested here could produce different results.
+
+\para{Modern high-quality LLMs.}
+The \hanna dataset uses generators from the GPT-2 era (2019--2022), producing text with high quality variance---from near-gibberish to coherent prose.
+For modern models where all outputs are competent, the quality confound is weaker, and an interestingness signal might emerge.
+
+\para{Specific creative domains.}
+Creative writing at the frontier---poetry, literary fiction, experimental prose---may reward rule-breaking in ways that standard quality metrics do not capture.
+In these domains, ``interesting'' may genuinely mean ``deviating from convention'' rather than ``well-executed.''
+
+\para{Different operationalization.}
+We proxy interestingness through Surprise and Engagement.
+A more targeted measure---perhaps focused on novelty of ideas or unexpectedness of narrative structure---might capture aspects of interestingness that LLMs do systematically undervalue.
+
+\subsection{Limitations}
+\label{sec:limitations}
+
+\para{Dataset age.}
+\hanna's generators are from the GPT-2 era.
+Text quality varies from near-gibberish to coherent, and the quality confound may dominate precisely because quality variance is so large.
+Our findings may not generalize to evaluations of modern, uniformly competent LLM outputs.
+
+\para{LLM judge diversity.}
+All three judges are OpenAI models.
+Using models from different families (Claude, Gemini, Llama) could reveal more meaningful disagreement patterns.
+The high inter-judge agreement we observe ($\rho = 0.71$--$0.77$) may partly reflect shared training data or alignment procedures.
+
+\para{Interestingness proxy.}
+We use Surprise and Engagement from \hanna, not a direct ``interestingness'' rating.
+These dimensions may not fully capture the concept, particularly aspects like intellectual stimulation or memorability.
+
+\para{Domain specificity.}
+Our results come from short creative fiction (\hanna) and general chatbot conversations (\arena).
+Other domains---research ideas, essays, journalism---may produce different human-LLM alignment patterns.
+
+\para{Arena sample size.}
+We evaluate only 200 Arena battles, limiting statistical power for subgroup analyses.

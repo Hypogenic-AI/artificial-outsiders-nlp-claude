@@ -1,0 +1,31 @@
+PDF: papers/doshi2024_generative_ai_creativity_diversity.pdf
+Total pages: 77
+Pages per chunk: 3
+
+Chunks:
+  doshi2024_generative_ai_creativity_diversity_chunk_001.pdf: pages 1-3
+  doshi2024_generative_ai_creativity_diversity_chunk_002.pdf: pages 4-6
+  doshi2024_generative_ai_creativity_diversity_chunk_003.pdf: pages 7-9
+  doshi2024_generative_ai_creativity_diversity_chunk_004.pdf: pages 10-12
+  doshi2024_generative_ai_creativity_diversity_chunk_005.pdf: pages 13-15
+  doshi2024_generative_ai_creativity_diversity_chunk_006.pdf: pages 16-18
+  doshi2024_generative_ai_creativity_diversity_chunk_007.pdf: pages 19-21
+  doshi2024_generative_ai_creativity_diversity_chunk_008.pdf: pages 22-24
+  doshi2024_generative_ai_creativity_diversity_chunk_009.pdf: pages 25-27
+  doshi2024_generative_ai_creativity_diversity_chunk_010.pdf: pages 28-30
+  doshi2024_generative_ai_creativity_diversity_chunk_011.pdf: pages 31-33
+  doshi2024_generative_ai_creativity_diversity_chunk_012.pdf: pages 34-36
+  doshi2024_generative_ai_creativity_diversity_chunk_013.pdf: pages 37-39
+  doshi2024_generative_ai_creativity_diversity_chunk_014.pdf: pages 40-42
+  doshi2024_generative_ai_creativity_diversity_chunk_015.pdf: pages 43-45
+  doshi2024_generative_ai_creativity_diversity_chunk_016.pdf: pages 46-48
+  doshi2024_generative_ai_creativity_diversity_chunk_017.pdf: pages 49-51
+  doshi2024_generative_ai_creativity_diversity_chunk_018.pdf: pages 52-54
+  doshi2024_generative_ai_creativity_diversity_chunk_019.pdf: pages 55-57
+  doshi2024_generative_ai_creativity_diversity_chunk_020.pdf: pages 58-60
+  doshi2024_generative_ai_creativity_diversity_chunk_021.pdf: pages 61-63
+  doshi2024_generative_ai_creativity_diversity_chunk_022.pdf: pages 64-66
+  doshi2024_generative_ai_creativity_diversity_chunk_023.pdf: pages 67-69
+  doshi2024_generative_ai_creativity_diversity_chunk_024.pdf: pages 70-72
+  doshi2024_generative_ai_creativity_diversity_chunk_025.pdf: pages 73-75
+  doshi2024_generative_ai_creativity_diversity_chunk_026.pdf: pages 76-77

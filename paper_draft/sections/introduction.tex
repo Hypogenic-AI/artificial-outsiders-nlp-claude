@@ -1,0 +1,32 @@
+\section{Introduction}
+\label{sec:intro}
+
+LLM-as-a-judge has become a dominant paradigm for evaluating generated text~\citep{zheng2023judging}.
+Rather than recruiting human annotators, practitioners route evaluation through models like GPT-4, which can approximate human preferences at a fraction of the cost.
+But what if these automated judges share a blind spot---systematically discounting text that is genuinely interesting to human readers?
+
+Prior work gives reason to worry.
+LLMs exhibit self-preference bias, rating their own outputs higher than competitors'~\citep{panickssery2024llm}.
+They prefer lower-perplexity text, favoring the familiar over the novel~\citep{wataoka2024self}.
+And LLM outputs converge on similar narrative solutions even across model families~\citep{echoes2024}.
+Together, these findings suggest a plausible scenario: LLM judges form a consensus that penalizes deviation from a shared ``boring'' distribution, and the texts they collectively reject---\outsiders---may be exactly the ones humans find most surprising and engaging.
+
+We call this the \textbf{artificial outsider hypothesis}: LLM-written texts that other LLMs rate as uninteresting are more likely to be interesting to humans than texts all LLMs prefer.
+If true, this would have serious implications for content curation, recommendation systems, and creative AI evaluation pipelines that rely on automated judges.
+
+We test this hypothesis directly.
+Using the \hanna dataset~\citep{chhun2022hanna}---1,056 stories from 11 generators with ground-truth human ratings on surprise and engagement---we collect 3,168 interestingness judgments from three OpenAI models (\gptfo, \gptfomini, \gptfourmini).
+We then measure whether LLM consensus inversely predicts human interestingness.
+
+Our results are clear: the hypothesis is \textbf{refuted}.
+LLM consensus positively correlates with human interestingness ($\rho = +0.48$, $p < 10^{-62}$), and stories in the top LLM consensus quartile receive 47\% higher human interest ratings than those in the bottom quartile.
+A complementary analysis of 200 Chatbot Arena battles~\citep{lmsys2023arena} confirms this alignment: humans chose the LLM-preferred response 77\% of the time.
+However, when we control for overall text quality, the correlation drops to near zero ($\rho \approx 0.00$), revealing that LLMs are primarily detecting the same quality signal humans detect rather than exhibiting a unique interestingness bias.
+
+We make the following contributions:
+\begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+    \item We propose and rigorously test the artificial outsider hypothesis---that LLM consensus inversely predicts human interestingness---across 1,056 stories and 3,168 LLM evaluations.
+    \item We identify a critical quality confound: after controlling for text quality, LLMs show no residual bias for or against interesting content ($\rho \approx 0.00$), demonstrating that raw LLM-human agreement on interestingness is driven entirely by shared quality perception.
+    \item We complement our primary analysis with 200 Chatbot Arena battles, confirming that LLM judges align with human preferences at 77--84\% agreement rates.
+    \item We provide actionable guidance for practitioners: LLM-as-a-judge is a reasonable proxy for human interestingness judgments, but researchers should control for quality when studying interestingness-specific signals.
+\end{itemize}

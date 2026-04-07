@@ -1,0 +1,12 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+We tested the artificial outsider hypothesis---that LLM-generated texts rated as uninteresting by LLM judges are paradoxically more interesting to humans.
+Across 1,056 stories with 3,168 LLM evaluations and ground-truth human ratings, we find the hypothesis is definitively refuted.
+LLM consensus positively correlates with human interestingness ($\rho = +0.48$), and stories unanimously disliked by LLM judges are genuinely less interesting to humans as well.
+
+The key insight is the quality confound: after controlling for overall text quality, the LLM-interestingness correlation drops to near zero ($\rho \approx 0.00$).
+LLMs are not biased for or against interesting content---they are detecting the same quality signal humans detect.
+This validates LLM-as-a-judge as a reasonable first-pass filter for interestingness, while cautioning that any study of interestingness-specific evaluation biases must control for quality.
+
+Future work should repeat this analysis with modern, uniformly high-quality LLM outputs where the quality confound is weaker; use diverse judge families (not solely OpenAI models) to test whether cross-family disagreement reveals different patterns; collect direct human interestingness ratings rather than proxying through Surprise and Engagement; and extend to domains beyond creative fiction, including research abstracts, news articles, and product descriptions.
